@@ -1,0 +1,37 @@
+version: "3.1"
+
+services:
+  worker:
+    restart: always
+    build: "./webhook-worker-pubsub"
+    user: "node"
+    ports:
+      - "9090:9090"
+    expose:
+      - 9090
+    environment:
+      NODE_ENV: production
+      PORT: 9090
+
+  vernemq:
+    image: vernemq/vernemq
+    restart: always
+    links:
+      - "worker:worker"
+    ports:
+      - "1883:1883"
+      - "8888:8888"
+    depends_on:
+      - worker
+    environment:
+      DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
+      #DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+      DOCKER_VERNEMQ_PLUGINS__VMQ_PASSWD: "off"
+      DOCKER_VERNEMQ_PLUGINS__VMQ_ACL: "off"
+
+      # Webhooks
+      DOCKER_VERNEMQ_PLUGINS__VMQ_WEBHOOKS: "on"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__HOOK: "on_publish"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__ENDPOINT: "http://worker:9090/webhook"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__HOOK: "auth_on_register"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__ENDPOINT: "http://worker:9090/auth"
