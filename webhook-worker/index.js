@@ -14,18 +14,23 @@ async function run(){
   const port = parseInt(process.env.PORT,10)
 
   app.use(bodyParser.json())
+
+  app.get('/_health', (req,res) => {
+    res.json({ result : 'ok'})
+  })
+
   app.post('/webhook', async (req, res) => {
     try {
       const { client_id: deviceId, payload } = req.body
       const decoded = Buffer.from(payload, 'base64').toString('utf8')
-      const data =  JSON.parse(decoded)        
-      await dataCollection.updateOne({ '_id' : deviceId }, { '$set' : data }, { upsert : true})    
+      const data =  JSON.parse(decoded)
+      await dataCollection.updateOne({ '_id' : deviceId }, { '$set' : data }, { upsert : true})
       await historyCollection.insertOne({
         ...data,
         deviceId,
         time : new Date()
-      })    
-      res.json({ result : 'ok '})    
+      })
+      res.json({ result : 'ok '})
     }catch(err){
       res.status(500).json({ message : err.message })
     }

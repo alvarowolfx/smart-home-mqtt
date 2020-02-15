@@ -13,7 +13,28 @@ This is a Work in Progress.
 ### Run with Docker
 
 ```
-docker run -f stack.yaml up
+docker run -f stack.yaml up -d
+```
+
+### Connect to local Mongodb running inside Docker
+
+```
+docker run -it --rm \
+  --name mongo-client
+  --network smart-home-mqtt_default \
+  mongo \
+  mongo \
+  --host mongo \
+  -u vernemq \
+  -p vernemq \
+  --authenticationDatabase admin \
+  devices
+```
+
+### Create user for worker and VerneMQ
+
+```
+db.createUser({ user: 'vernemq', pwd:  'vernemq', roles : [ { role : "readWrite", db : "devices" }] })
 ```
 
 ### Generate hashed password with bcrypt
@@ -26,48 +47,46 @@ htpasswd -bnBC 10 "" {YOUR_PASSWORD} | tr -d ':\n' | sed 's/$2y/$2a/'
 
 ```
 /* Device */
-{
-    "_id" : ObjectId("5e2112a8d4561841b6effb00"),
+db.getCollection("vmq_acl_auth").insert({
     "mountpoint" : "",
     "client_id" : "DEADBEEF",
     "username" : "key",
     "passhash" : "$2a$10$eThqQcd23BNDm5IPE7szOekm7wfOg1gs8TirLV4oS6TwYb26jnwpm",
-    "publish_acl" : [ 
+    "publish_acl" : [
         {
             "pattern" : "devices/%c/state/#"
         }
     ],
-    "subscribe_acl" : [ 
+    "subscribe_acl" : [
         {
             "pattern" : "devices/%c/commands/#"
         }
     ]
-}
+})
 
 /* User to send commands */
-{
-    "_id" : ObjectId("5e21176d3af53af437ffc2b8"),
+db.getCollection("vmq_acl_auth").insert({
     "mountpoint" : "",
     "client_id" : "unused",
     "username" : "commander",
     "passhash" : "$2a$10$2phzSZ9RcxTa4kUERwV74OS.Izk8owcxeOzmaVLctnojzl5b9r7Om",
-    "publish_acl" : [ 
+    "publish_acl" : [
         {
             "pattern" : "devices/+/commands/#"
         }
     ],
-    "subscribe_acl" : [ 
+    "subscribe_acl" : [
         {
             "pattern" : "devices/+/state/#"
         }
     ]
-}
+})
 ```
 
 #### References
 
 * https://expressjs.com/en/resources/middleware/body-parser.html
-* https://devcenter.heroku.com/articles/local-development-with-docker-compose 
+* https://devcenter.heroku.com/articles/local-development-with-docker-compose
 * https://hub.docker.com/_/mongo
 * https://docs.mongodb.com/ecosystem/drivers/node/
 * https://docs.vernemq.com/plugindevelopment/webhookplugins
