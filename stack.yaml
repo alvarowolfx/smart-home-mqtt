@@ -3,12 +3,8 @@ version: "3.1"
 services:
   worker:
     restart: always
-    image: "node:dubnium-alpine"
+    build: "./webhook-worker"
     user: "node"
-    working_dir: /home/node/app
-    command: "npm start"
-    volumes:
-      - ./webhook-worker:/home/node/app
     ports:
       - "8080:8080"
     expose:
@@ -30,8 +26,9 @@ services:
     ports:
       - "27017:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_ROOT_USERNAME: vernemq
+      MONGO_INITDB_ROOT_PASSWORD: vernemq
+      MONGO_INITDB_DATABASE: devices
 
   vernemq:
     image: vernemq/vernemq
