@@ -16,6 +16,12 @@ function isPatternAllowedToPublish(topic, pattern, acl ){
 
 function isPatternAllowedToSubscribe(topic, pattern, acl ){
   const filledPattern = fillPattern(pattern, acl)
+  if(topic.indexOf('+')){
+    topic = topic.replace('+', 'generic-param')
+  }
+  if(topic.indexOf('#')){
+    topic = topic.replace('#', 'generic-path')
+  }
   const results = mqttRegex(filledPattern).exec(topic)
   return !!results
 }

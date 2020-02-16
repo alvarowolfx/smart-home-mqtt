@@ -1,4 +1,4 @@
-const { isPatternAllowedToPublish } = require('./pattern')
+const { isPatternAllowedToPublish, isPatternAllowedToSubscribe } = require('./pattern')
 
 describe('MQTT Pattern match', () => {
 
@@ -35,5 +35,17 @@ describe('MQTT Pattern match', () => {
 
     const anotherTopic = 'devices/DEADBEEF/state/light/color'
     expect(isPatternAllowedToPublish(anotherTopic, pattern, deviceInfo)).toBe(true)
+  })
+
+  test('Should allow to subscribe with wildcards', () => {
+    const deviceInfo = {
+      clientId : 'DEADBEEF',
+    }
+    const pattern = 'devices/+/state/#'
+    const topic = 'devices/+/state'
+    expect(isPatternAllowedToSubscribe(topic, pattern, deviceInfo)).toBe(true)
+
+    const anotherTopic = 'devices/DEADBEEF/state/#'
+    expect(isPatternAllowedToSubscribe(anotherTopic, pattern, deviceInfo)).toBe(true)
   })
 })
