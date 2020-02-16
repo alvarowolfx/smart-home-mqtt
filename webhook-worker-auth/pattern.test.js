@@ -48,4 +48,39 @@ describe('MQTT Pattern match', () => {
     const anotherTopic = 'devices/DEADBEEF/state/#'
     expect(isPatternAllowedToSubscribe(anotherTopic, pattern, deviceInfo)).toBe(true)
   })
+
+  test('Should allow checks for multiple topics subscriptions', () => {
+    const deviceInfo = {
+      clientId : 'commander',
+    }
+
+    let topics = [
+      { topic : 'devices/+/state/#' },
+      { topic : 'devices/DEADBEEF/state/#' },
+      { topic : 'devices/DEADBEEF/bogus/#' }
+    ]
+
+    const pattern = 'devices/+/state/#'
+
+    const checkMatch = (topics, pattern) => {
+      return topics.map( ({ topic }) => {
+        const match = isPatternAllowedToSubscribe(topic, pattern, deviceInfo)
+        if(!match){
+          return { topic, qos: 128 }
+        }
+        return null
+      }).filter( t => t !== null)
+    }
+
+    let topicsMatch = checkMatch(topics, pattern)
+    expect(topicsMatch.length).toBe(1)
+    expect(topicsMatch).toContainEqual({ topic : 'devices/DEADBEEF/bogus/#', qos: 128 })
+
+    topics = [
+      { topic : 'devices/+/state/#' },
+      { topic : 'devices/DEADBEEF/state/#' }
+    ]
+    topicsMatch = checkMatch(topics, pattern)
+    expect(topicsMatch.length).toBe(0)
+  })
 })

@@ -63,16 +63,28 @@ async function run() {
   app.post('/subscribe', async (req, res) => {
     try {
       //console.log('Subscribe', req.body)
-      const { client_id: deviceId, username, mountpoint, topic } = req.body
+      const { client_id: deviceId, username, mountpoint, topics } = req.body
       const device = await getDeviceAcl(deviceId)
       if(device){
         const acls = Object.values(device.subscribe_acl)
         const deviceInfo = { username, mountpoint, clientId : deviceId }
-        const match = acls.find( acl => {
-          const { pattern } = acl
-          return isPatternAllowedToSubscribe(topic, pattern, deviceInfo)
-        })
-        if(match){
+        const topicsMatch = topics.map( ({ topic }) => {
+          const match = acls.find( acl => {
+            const { pattern } = acl
+            return isPatternAllowedToSubscribe(topic, pattern, deviceInfo)
+          })
+
+          if(!match){
+            return { topic, qos: 128 }
+          }
+
+          return null
+        }).filter( t => t !== null)
+
+        if(topicsMatch.length > 0){
+          res.json({ result: 'ok', topics : topicsMatch })
+          return
+        } else if ( topicsMatch.length === topics.length ){
           res.json({ result: 'ok' })
           return
         }

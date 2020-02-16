@@ -23,9 +23,9 @@ async function run() {
 
   app.post('/webhook', async (req, res) => {
     try {
-      const { client_id: deviceId, payload } = req.body
+      const { client_id: deviceId, topic, payload } = req.body
       const decoded = Buffer.from(payload, 'base64').toString('utf8')
-      const attributes = { deviceId }
+      const attributes = { deviceId, topic }
       const dataBuffer = Buffer.from(decoded)
       await pubsub.topic(topicName).publish(dataBuffer,attributes)
       res.json({ result: 'ok' })
