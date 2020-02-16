@@ -70,7 +70,7 @@ async function run() {
         const deviceInfo = { username, mountpoint, clientId : deviceId }
         const match = acls.find( acl => {
           const { pattern } = acl
-          return isPatternAllowedToPublish(topic, pattern, deviceInfo)
+          return isPatternAllowedToSubscribe(topic, pattern, deviceInfo)
         })
         if(match){
           res.json({ result: 'ok' })
@@ -93,7 +93,7 @@ async function run() {
         const deviceInfo = { username, mountpoint, clientId : deviceId }
         const match = acls.find( acl => {
           const { pattern } = acl
-          return isPatternAllowedToSubscribe(topic, pattern, deviceInfo)
+          return isPatternAllowedToPublish(topic, pattern, deviceInfo)
         })
         if(match){
           res.json({ result: 'ok' })

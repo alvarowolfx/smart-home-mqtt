@@ -39,10 +39,10 @@ describe('MQTT Pattern match', () => {
 
   test('Should allow to subscribe with wildcards', () => {
     const deviceInfo = {
-      clientId : 'DEADBEEF',
+      clientId : 'commander',
     }
     const pattern = 'devices/+/state/#'
-    const topic = 'devices/+/state'
+    const topic = 'devices/+/state/#'
     expect(isPatternAllowedToSubscribe(topic, pattern, deviceInfo)).toBe(true)
 
     const anotherTopic = 'devices/DEADBEEF/state/#'
