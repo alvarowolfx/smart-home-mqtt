@@ -1,7 +1,7 @@
 version: "3.1"
 
 services:
-  worker:
+  worker_pubsub:
     restart: always
     build: "./webhook-worker-pubsub"
     user: "node"
@@ -9,20 +9,41 @@ services:
       - "9090:9090"
     expose:
       - 9090
+    volumes:
+      - ~/.config/:/node/.config:ro
     environment:
       NODE_ENV: production
       PORT: 9090
+
+  auth:
+    restart: always
+    build: "./webhook-worker-auth"
+    user: "node"
+    ports:
+      - "9191:9191"
+    expose:
+      - 9191
+    volumes:
+      - ~/keys/:/node/keys/:ro
+      - ~/.config/:/node/.config:ro
+    environment:
+      NODE_ENV: production
+      PORT: 9191
+      DB_URL: "{FIREBASE_URL}"
+      SERVICE_ACCOUNT_FILE: "/node/keys/account-file.json"
 
   vernemq:
     image: vernemq/vernemq
     restart: always
     links:
-      - "worker:worker"
+      - "worker_pubsub:worker_pubsub"
+      - "auth:auth"
     ports:
       - "1883:1883"
       - "8888:8888"
     depends_on:
-      - worker
+      - worker_pubsub
+      - auth
     environment:
       DOCKER_VERNEMQ_ACCEPT_EULA: "yes"
       #DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
@@ -32,6 +53,10 @@ services:
       # Webhooks
       DOCKER_VERNEMQ_PLUGINS__VMQ_WEBHOOKS: "on"
       DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__HOOK: "on_publish"
-      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__ENDPOINT: "http://worker:9090/webhook"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__ENDPOINT: "http://worker_pubsub:9090/webhook"
       DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__HOOK: "auth_on_register"
-      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__ENDPOINT: "http://worker:9090/auth"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__ENDPOINT: "http://auth:9191/register"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER3__HOOK: "auth_on_subscribe"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER3__ENDPOINT: "http://auth:9191/subscribe"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER4__HOOK: "auth_on_publish"
+      DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER4__ENDPOINT: "http://auth:9191/publish"

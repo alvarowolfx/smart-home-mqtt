@@ -1,23 +1,26 @@
 {
-  "name": "webhook-worker-pubsub",
+  "name": "webhook-worker-auth",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Alvaro Viebrantz",
   "license": "MIT",
   "dependencies": {
-    "@google-cloud/pubsub": "^1.5.0",
+    "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "firebase-admin": "^8.9.2",
+    "mqtt-regex": "^1.0.5"
   },
   "devDependencies": {
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.20.1"
+    "eslint-plugin-import": "^2.20.1",
+    "jest": "^25.1.0"
   }
 }
