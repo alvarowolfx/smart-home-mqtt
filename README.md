@@ -91,3 +91,4 @@ db.getCollection("vmq_acl_auth").insert({
 * https://docs.mongodb.com/ecosystem/drivers/node/
 * https://docs.vernemq.com/plugindevelopment/webhookplugins
 * https://docs.vernemq.com/configuration/db-auth#mongodb
+* https://cloud.google.com/community/tutorials/docker-compose-on-container-optimized-os

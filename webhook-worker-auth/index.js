@@ -81,10 +81,13 @@ async function run() {
           return null
         }).filter( t => t !== null)
 
-        if(topicsMatch.length > 0){
+        if(topicsMatch.length === topics.length ){
+          res.json({ result : { error : 'not_allowed' }})
+          return
+        } else if(topicsMatch.length > 0){
           res.json({ result: 'ok', topics : topicsMatch })
           return
-        } else if ( topicsMatch.length === topics.length ){
+        } else if ( topicsMatch.length === 0){
           res.json({ result: 'ok' })
           return
         }
