@@ -83,6 +83,13 @@ db.getCollection("vmq_acl_auth").insert({
 })
 ```
 
+### Firebase Cloud Functions
+
+* Config
+```
+firebase functions:config:set mqtt.url="tcp://{YOUR_BROKER}" mqtt.username="{USERNAME}" mqtt.password="{PASSWORD}"
+```
+
 #### References
 
 * https://expressjs.com/en/resources/middleware/body-parser.html

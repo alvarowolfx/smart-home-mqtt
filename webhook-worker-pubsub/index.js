@@ -3,7 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { PubSub } = require('@google-cloud/pubsub')
 
-const topicName = process.env.PUBSUB_TOPIC || 'devices-data'
+const topicName = process.env.PUBSUB_TOPIC || 'devices-inbound'
 const projectId = process.env.GCLOUD_PROJECT
 
 async function run() {
