@@ -13,7 +13,7 @@ This is a Work in Progress.
 ### Run with Docker
 
 ```
-docker run -f stack.yaml up -d
+docker-compose -f stack.yaml up -d
 ```
 
 ### Connect to local Mongodb running inside Docker
@@ -99,3 +99,4 @@ firebase functions:config:set mqtt.url="tcp://{YOUR_BROKER}" mqtt.username="{USE
 * https://docs.vernemq.com/plugindevelopment/webhookplugins
 * https://docs.vernemq.com/configuration/db-auth#mongodb
 * https://cloud.google.com/community/tutorials/docker-compose-on-container-optimized-os
+* https://blog.risingstack.com/getting-started-with-nodejs-and-mqtt/
