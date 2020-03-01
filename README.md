@@ -34,6 +34,7 @@ docker run -it --rm \
 ### Create user for worker and VerneMQ
 
 ```
+use devices
 db.createUser({ user: 'vernemq', pwd:  'vernemq', roles : [ { role : "readWrite", db : "devices" }] })
 ```
 
@@ -47,6 +48,7 @@ htpasswd -bnBC 10 "" {YOUR_PASSWORD} | tr -d ':\n' | sed 's/$2y/$2a/'
 
 ```
 /* Device */
+use devices
 db.getCollection("vmq_acl_auth").insert({
     "mountpoint" : "",
     "client_id" : "DEADBEEF",
@@ -65,6 +67,7 @@ db.getCollection("vmq_acl_auth").insert({
 })
 
 /* User to send commands */
+use devices
 db.getCollection("vmq_acl_auth").insert({
     "mountpoint" : "",
     "client_id" : "unused",

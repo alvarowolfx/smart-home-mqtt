@@ -28,7 +28,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: devices
 
   vernemq:
     image: vernemq/vernemq
@@ -60,5 +59,3 @@ services:
       DOCKER_VERNEMQ_PLUGINS__VMQ_WEBHOOKS: "on"
       DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__HOOK: "on_publish"
       DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER1__ENDPOINT: "http://worker:8080/webhook"
-      #DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__HOOK: "on_publish"
-      #DOCKER_VERNEMQ_VMQ_WEBHOOKS__WORKER2__ENDPOINT: "http://worker:8080/auth"
