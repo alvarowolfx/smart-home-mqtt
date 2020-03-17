@@ -2,7 +2,7 @@
 
 End goal of this project is to have a generic bridge between MQTT devices and Smart Home SDK, first just for Google Assistant, but also for Alexa.
 
-This is a Work in Progress.
+This is a Work in Progress and you can follow this project playlist on [Youtube](https://www.youtube.com/playlist?list=PL23PkLc4oXEh5a-RxHC3MDayIoTFVfP17)
 
 ## Running a MQTT Broker with Authentication
 
